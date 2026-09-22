@@ -1,7 +1,7 @@
 import os
 import json
+import logging
 from typing import Dict, Any, List, Optional
-from dataclasses import dataclass, field
 
 from PySide6.QtCore import QObject, Signal
 
@@ -119,7 +119,9 @@ class AppState(QObject):
         try:
             img, meta = self.stimulus_gen.generate(config)
             return img
-        except Exception:
+        except Exception as e:
+            import logging
+            logging.warning(f"Stimulus preview generation failed: {e}")
             return None
 
 

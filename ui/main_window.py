@@ -160,18 +160,45 @@ class MainWindow(QMainWindow):
             QTableWidget { background: #0a0a12; color: #e0e0e0; gridline-color: #333; }
             QTableWidget::item { padding: 4px; }
             QHeaderView::section { background: #14141f; color: #00ffff; padding: 4px; border: 1px solid #333; }
+            QTableWidget::item:selected { background: #00ffff33; }
         """)
+        self.history_table.itemSelectionChanged.connect(self._on_history_selected)
+        self.history_table.doubleClicked.connect(self._on_history_replay)
         history_layout.addWidget(self.history_table)
 
-        # Refresh button
-        refresh_btn = QPushButton("REFRESH HISTORY")
+        # History action buttons
+        history_btn_layout = QHBoxLayout()
+
+        self._selected_exp_id = None
+
+        replay_btn = QPushButton("REPLAY SELECTED")
+        replay_btn.setStyleSheet("""
+            QPushButton { background: #0a0a12; color: #00ffff; border: 1px solid #00ffff;
+                padding: 4px 12px; font-size: 10px; border-radius: 4px; }
+            QPushButton:hover { background: #00ffff; color: #0a0a12; }
+        """)
+        replay_btn.clicked.connect(self._replay_selected)
+        history_btn_layout.addWidget(replay_btn)
+
+        view_btn = QPushButton("VIEW DETAILS")
+        view_btn.setStyleSheet("""
+            QPushButton { background: #0a0a12; color: #00ffff; border: 1px solid #00ffff;
+                padding: 4px 12px; font-size: 10px; border-radius: 4px; }
+            QPushButton:hover { background: #00ffff; color: #0a0a12; }
+        """)
+        view_btn.clicked.connect(self._view_selected_details)
+        history_btn_layout.addWidget(view_btn)
+
+        refresh_btn = QPushButton("REFRESH")
         refresh_btn.setStyleSheet("""
             QPushButton { background: #0a0a12; color: #00ffff; border: 1px solid #00ffff;
                 padding: 4px 12px; font-size: 10px; border-radius: 4px; }
             QPushButton:hover { background: #00ffff; color: #0a0a12; }
         """)
         refresh_btn.clicked.connect(self._refresh_history)
-        history_layout.addWidget(refresh_btn)
+        history_btn_layout.addWidget(refresh_btn)
+
+        history_layout.addLayout(history_btn_layout)
 
         right_main_layout.addWidget(history_widget, stretch=1)
 
@@ -283,6 +310,62 @@ class MainWindow(QMainWindow):
             self.history_table.setItem(row, 5, QTableWidgetItem(f"{nov:.4f}" if isinstance(nov, (int, float)) else str(nov)))
             self.history_table.setItem(row, 6, QTableWidgetItem(str(timestamp)))
 
+    def _on_history_selected(self):
+        rows = self.history_table.selectionModel().selectedRows()
+        if rows:
+            row = rows[0].row()
+            item = self.history_table.item(row, 0)
+            if item:
+                self._selected_exp_id = item.text()
+
+    def _on_history_replay(self, index):
+        item = self.history_table.item(index.row(), 0)
+        if item:
+            self._replay_experiment_by_id(item.text())
+
+    def _replay_experiment_by_id(self, exp_id: str):
+        if not exp_id or exp_id == "N/A":
+            return
+        result = self.state.replay_experiment(exp_id)
+        if result:
+            self._on_experiment_finished(result)
+            self.status_label.setText(f"Replayed: {exp_id}")
+
+    def _replay_selected(self):
+        if self._selected_exp_id:
+            self._replay_experiment_by_id(self._selected_exp_id)
+        else:
+            self.status_label.setText("Select an experiment to replay")
+
+    def _view_selected_details(self):
+        if not self._selected_exp_id:
+            self.status_label.setText("Select an experiment to view")
+            return
+        data = self.state.get_experiment_data(self._selected_exp_id, "measurements")
+        if data:
+            divergence = data.get("divergence", {})
+            baseline = data.get("baseline", {})
+            altered = data.get("altered", {})
+            details = f"Experiment: {self._selected_exp_id}\n\n"
+            if isinstance(divergence, dict):
+                details += f"Divergence: {divergence.get('perception_divergence_score', 0):.6f}\n"
+                details += f"Geometry Diff: {divergence.get('geometry_diff', 0):.6f}\n"
+                details += f"Novelty Diff: {divergence.get('novelty_diff', 0):.6f}\n"
+                details += f"Embedding Distance: {divergence.get('embedding_distance', 0):.6f}\n"
+            if isinstance(baseline, dict):
+                details += f"\nBaseline Geometry: {baseline.get('geometry_score', 0):.4f}\n"
+                details += f"Baseline Confidence: {baseline.get('confidence', 0):.4f}\n"
+            if isinstance(altered, dict):
+                details += f"\nAltered Geometry: {altered.get('geometry_score', 0):.4f}\n"
+                details += f"Altered Confidence: {altered.get('confidence', 0):.4f}\n"
+                details += f"Altered Novelty: {altered.get('novelty', 0):.4f}\n"
+            msg = QMessageBox(self)
+            msg.setWindowTitle(f"Details: {self._selected_exp_id}")
+            msg.setText(details)
+            msg.exec()
+        else:
+            self.status_label.setText(f"No data for: {self._selected_exp_id}")
+
     def _on_experiment_finished(self, results: dict):
         baseline = results.get("baseline", {})
         altered = results.get("altered", {})
@@ -314,6 +397,7 @@ class MainWindow(QMainWindow):
             self._show_report_dialog(report)
 
         self._refresh_history()
+        self._compute_statistics()
 
     def _compute_statistics(self):
         report = self.state.get_stats_report()
