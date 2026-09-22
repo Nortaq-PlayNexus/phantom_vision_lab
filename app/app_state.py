@@ -61,9 +61,10 @@ class AppState(QObject):
         self.status_updated.emit("Generating report...")
         self.progress_updated.emit(80)
 
-        measurements = self.store.get_experiment_data(self.current_experiment_id, "measurements")
-        baseline = self.store.get_experiment_data(self.current_experiment_id, "baseline")
-        altered = self.store.get_experiment_data(self.current_experiment_id, "altered")
+        all_data = self.store.get_experiment(self.current_experiment_id)
+        measurements = all_data.get("measurements") if all_data else {}
+        baseline = all_data.get("baseline") if all_data else {}
+        altered = all_data.get("altered") if all_data else {}
 
         report = self.reporter.generate(
             self.current_experiment_id,
@@ -71,16 +72,6 @@ class AppState(QObject):
             result.get("divergence", {}),
             measurements or {},
         )
-
-        from storage.exporter import Exporter
-        exporter = Exporter(self.store.experiments_dir)
-        report_dict = report.to_dict()
-        exporter.export_json(self.current_experiment_id, {
-            **self.experiment_results, "report": report_dict,
-        })
-        exporter.export_csv(self.current_experiment_id, self.experiment_results)
-        exporter.export_html_report(self.current_experiment_id, report_dict)
-        exporter.export_markdown_report(self.current_experiment_id, report_dict)
 
         self.experiment_results = {
             "experiment_id": self.current_experiment_id,
@@ -91,6 +82,16 @@ class AppState(QObject):
             "report": report.to_dict(),
             "stimulus_path": result.get("stimulus_path", ""),
         }
+
+        from storage.exporter import Exporter
+        exporter = Exporter(self.store.experiments_dir)
+        report_dict = self.experiment_results["report"]
+        exporter.export_json(self.current_experiment_id, {
+            **self.experiment_results,
+        })
+        exporter.export_csv(self.current_experiment_id, self.experiment_results)
+        exporter.export_html_report(self.current_experiment_id, report_dict)
+        exporter.export_markdown_report(self.current_experiment_id, report_dict)
 
         self.experiment_history.append(self.experiment_results.copy())
         self.experiment_finished.emit(self.experiment_results)
