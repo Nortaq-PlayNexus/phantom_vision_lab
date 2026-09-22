@@ -26,6 +26,10 @@ A complete Windows desktop research application with:
 
 - **Cross-Modal Enhancement**: The Cross-Modal Association parameter now actively influences semantic concepts, object tagging, and spatial relationship analysis.
 
+- **History Replay**: Double-click any experiment in the History table to replay it, or use REPLAY SELECTED / VIEW DETAILS buttons.
+
+- **Auto-Statistics**: Statistics dashboard automatically refreshes after each experiment.
+
 - **Automated Tests**: Tests for stimulus determinism, engine behavior, metrics calculation, experiment store, statistics, and integration.
 
 ## WHAT WORKS
