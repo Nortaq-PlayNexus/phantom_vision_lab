@@ -16,7 +16,7 @@ Computational research application that simulates altered-state AI perception wh
 - **Live Stimulus Animation**: Continuous morphing display with temporal modulation
 - **Baseline/Altered Comparison**: Side-by-side viewer panels
 - **Perception Divergence Display**: Real-time score with progress bar
-- **Control Panel**: 11 parameter sliders, presets (BASELINE, LOW PERTURBATION, HIGH SENSORY GAIN, HIGH PREDICTION ERROR, PATTERN AMPLIFICATION, MAXIMUM EXPLORATION), reset/randomize, save/load custom presets
+- **Control Panel**: 11 parameter sliders, presets, reset/randomize, save/load custom presets, plus stimulus configuration (pattern type selector, seed input)
 - **Experiment History Table**: Browse past experiments with divergence scores, metrics, and timestamps
 - **Statistics Dashboard Tab**: Aggregated analysis with t-test results and effect sizes
 
@@ -83,8 +83,9 @@ python run_experiment.py batch --iterations 20 --presets "BASELINE,MAXIMUM EXPLO
 
 1. Launch the application
 2. A generated structured-light pattern will be displayed in the LIVE STIMULUS panel (animated)
-3. Adjust parameters in the Control Panel using sliders (0-100 for each)
-4. Apply a preset: BASELINE, LOW PERTURBATION, HIGH SENSORY GAIN, HIGH PREDICTION ERROR, PATTERN AMPLIFICATION, MAXIMUM EXPLORATION
+3. Select a pattern type and seed in the Stimulus Configuration section
+4. Adjust parameters in the Control Panel using sliders (0-100 for each)
+5. Apply a preset: BASELINE, LOW PERTURBATION, HIGH SENSORY GAIN, HIGH PREDICTION ERROR, PATTERN AMPLIFICATION, MAXIMUM EXPLORATION
 5. Click **RUN EXPERIMENT** to execute baseline + altered comparison
 6. View results: perception divergence score, metrics, and scientific interpretation report
 7. Browse past experiments in the **History** tab and statistics in the **Statistics** tab
