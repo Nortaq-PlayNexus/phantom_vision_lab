@@ -114,23 +114,26 @@ class StimulusGenerator:
     def _generate_lattice(self, W, H, cfg, rng):
         img = np.zeros((H, W, 3), dtype=float)
         freq = cfg.frequency * 20
-        for y in range(H):
-            for x in range(W):
-                v = np.sin(x * freq + cfg.phase) * np.cos(y * freq + cfg.phase)
-                angle = np.arctan2(y - H/2, x - W/2)
-                dist = np.sqrt((x - W/2)**2 + (y - H/2)**2)
-                if cfg.radial_distortion > 0:
-                    r_warp = dist * (1.0 + cfg.radial_distortion * 0.1)
-                    angle2 = angle * (1.0 + cfg.radial_distortion * 0.05)
-                    x2 = W/2 + r_warp * np.cos(angle2)
-                    y2 = H/2 + r_warp * np.sin(angle2)
-                    v2 = np.sin(x2 * freq + cfg.phase) * np.cos(y2 * freq + cfg.phase)
-                    v = v * (1 - cfg.radial_distortion) + v2 * cfg.radial_distortion
-                img[y, x] = [v * 128 + 128, v * 80 + 100, v * 160 + 60]
+        x = np.arange(W)
+        y = np.arange(H)
+        xx, yy = np.meshgrid(x, y)
+        v = np.sin(xx * freq + cfg.phase) * np.cos(yy * freq + cfg.phase)
+        angle = np.arctan2(yy - H / 2, xx - W / 2)
+        dist = np.sqrt((xx - W / 2) ** 2 + (yy - H / 2) ** 2)
+        if cfg.radial_distortion > 0:
+            r_warp = dist * (1.0 + cfg.radial_distortion * 0.1)
+            angle2 = angle * (1.0 + cfg.radial_distortion * 0.05)
+            x2 = W / 2 + r_warp * np.cos(angle2)
+            y2 = H / 2 + r_warp * np.sin(angle2)
+            v2 = np.sin(x2 * freq + cfg.phase) * np.cos(y2 * freq + cfg.phase)
+            v = v * (1 - cfg.radial_distortion) + v2 * cfg.radial_distortion
+        img[:, :, 0] = v * 128 + 128
+        img[:, :, 1] = v * 80 + 100
+        img[:, :, 2] = v * 160 + 60
         if cfg.wave_interference > 0:
             wy = np.sin(np.indices((H, W))[0] * freq * 3) * cfg.wave_interference * 30
             wx = np.cos(np.indices((H, W))[1] * freq * 3) * cfg.wave_interference * 30
-            img = np.clip(img + wy[:,:,None] + wx[:,:,None], 0, 255)
+            img = np.clip(img + wy[:, :, None] + wx[:, :, None], 0, 255)
         return img
 
     def _generate_radial_diffraction(self, W, H, cfg, rng):
