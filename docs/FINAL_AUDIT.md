@@ -22,6 +22,8 @@ A complete Windows desktop research application with:
 
 - **Data Export**: Automatic export to JSON, CSV, HTML report, and Markdown report formats after every experiment (via UI or programmatic API).
 
+- **CLI Headless Mode**: `run_experiment.py` enables command-line experiments with JSON output, parameter overrides, and batch mode.
+
 - **Cross-Modal Enhancement**: The Cross-Modal Association parameter now actively influences semantic concepts, object tagging, and spatial relationship analysis.
 
 - **Automated Tests**: Tests for stimulus determinism, engine behavior, metrics calculation, experiment store, statistics, and integration.

@@ -64,6 +64,21 @@ For executable build:
 BUILD.bat
 ```
 
+### Command Line (Headless Mode)
+
+Run experiments without the GUI:
+
+```bash
+# Single experiment
+python run_experiment.py experiment --pattern fractal --preset "HIGH PREDICTION ERROR" --seed 999
+
+# With parameter overrides
+python run_experiment.py experiment --pattern noise_geometry --params "SENSORY_GAIN=90" "PREDICTION_ERROR=80"
+
+# Batch experiments
+python run_experiment.py batch --iterations 20 --presets "BASELINE,MAXIMUM EXPLORATION"
+```
+
 ## Quick Start
 
 1. Launch the application
