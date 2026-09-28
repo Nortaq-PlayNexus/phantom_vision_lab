@@ -8,7 +8,7 @@ from PySide6.QtCore import Qt, Signal, QThread, QTimer
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel,
     QPushButton, QSlider, QGroupBox, QSplitter, QTextEdit,
-    QProgressBar, QComboBox, QMessageBox,
+    QProgressBar, QComboBox, QMessageBox, QSpinBox,
 )
 from PySide6.QtGui import QPainter, QImage, QFont
 
@@ -29,6 +29,7 @@ class ControlPanel(QWidget):
         self.state = app_state
         self.altered_engine = AlteredStateEngine()
         self.exp_thread = None
+        self.stim_config = None
         self.init_ui()
 
     def init_ui(self):
@@ -39,6 +40,27 @@ class ControlPanel(QWidget):
         title.setFont(QFont("Segoe UI", 12, QFont.Bold))
         title.setStyleSheet("color: #00ffff;")
         layout.addWidget(title)
+
+        # Stimulus configuration group
+        stim_group = QGroupBox("Stimulus Configuration")
+        stim_layout = QHBoxLayout(stim_group)
+        stim_layout.setSpacing(8)
+
+        stim_layout.addWidget(QLabel("Pattern:"))
+        self.pattern_combo = QComboBox()
+        self.pattern_combo.addItems(StimulusGenerator.PATTERN_TYPES)
+        self.pattern_combo.setCurrentText("lattice")
+        self.pattern_combo.setStyleSheet("color: #e0e0e0; background: #0a0a12; padding: 4px;")
+        stim_layout.addWidget(self.pattern_combo)
+
+        stim_layout.addWidget(QLabel("Seed:"))
+        self.seed_spin = QSpinBox()
+        self.seed_spin.setRange(1, 999999)
+        self.seed_spin.setValue(42)
+        self.seed_spin.setStyleSheet("color: #e0e0e0; background: #0a0a12; padding: 4px;")
+        stim_layout.addWidget(self.seed_spin)
+
+        layout.addWidget(stim_group)
 
         self.sliders = {}
         for param in AlteredStateEngine.PARAMS:
@@ -93,12 +115,20 @@ class ControlPanel(QWidget):
         preset_layout.addWidget(self.preset_combo)
         layout.addLayout(preset_layout)
 
+    def _get_stim_config(self) -> StimulusConfig:
+        return StimulusConfig(
+            seed=self.seed_spin.value(),
+            pattern_type=self.pattern_combo.currentText(),
+        )
+
     def _on_slider_changed(self, name: str, value: int):
         self.altered_engine.set_param(name, float(value))
         if name in self.sliders:
             lbl = self.sliders[name].parent().findChild(QLabel)
             if lbl:
-                lbl.setText(f"{AlteredStateEngine.PARAMS[[p.name for p in AlteredStateEngine.PARAMS].index(name)].description} [{value}]")
+                param = [p for p in AlteredStateEngine.PARAMS if p.name == name]
+                if param:
+                    lbl.setText(f"{param[0].description} [{value}]")
         self.params_changed.emit(self.altered_engine.to_dict())
 
     def _reset(self):
@@ -155,7 +185,7 @@ class ControlPanel(QWidget):
             self.status_updated.emit("Experiment already running...")
             return
         params = self.altered_engine.to_dict()
-        stim_config = StimulusConfig(seed=42)
+        stim_config = self._get_stim_config()
         self.exp_thread = ExperimentThread(self.state, stim_config, params)
         self.exp_thread.finished.connect(self._on_experiment_done)
         self.exp_thread.status.connect(self.status_updated)
