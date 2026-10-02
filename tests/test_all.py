@@ -1,6 +1,9 @@
 import sys
 import os
+import subprocess
+from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+ROOT = Path(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pytest
 import numpy as np
@@ -246,3 +249,86 @@ class TestIntegration:
         replayed = engine.replay_experiment(exp_id)
         assert replayed is not None
         assert replayed.get("replayed") == True if "replayed" in replayed else True
+
+
+# --------------------------------------------------------------------------- #
+# cross-process determinism
+# --------------------------------------------------------------------------- #
+
+class TestCrossProcessDeterminism:
+    """Determinism must survive a fresh interpreter, not just a second call.
+
+    The other determinism test in this file generates twice inside ONE process.
+    That cannot detect the usual real causes of drift: a module-level RNG seeded
+    at import, a lazily-initialised global cache, or anything that depends on
+    ``PYTHONHASHSEED`` or dict iteration order. All of those look perfectly
+    deterministic in-process and change between runs on the same machine.
+
+    This spawns three separate interpreters and compares SHA-256 digests of every
+    pattern type's output.
+    """
+
+    PATTERNS = tuple(StimulusGenerator.PATTERN_TYPES)
+
+    def _digest_in_subprocess(self) -> str:
+        script = (
+            "import sys, hashlib, numpy as np\n"
+            f"sys.path.insert(0, {str(ROOT)!r})\n"
+            "from stimuli.generator import StimulusGenerator, StimulusConfig\n"
+            "g = StimulusGenerator()\n"
+            "out = []\n"
+            f"for pat in {self.PATTERNS!r}:\n"
+            "    img, _ = g.generate(StimulusConfig(seed=42, pattern_type=pat))\n"
+            "    out.append(hashlib.sha256(np.ascontiguousarray(img).tobytes()).hexdigest())\n"
+            "print('|'.join(out))\n"
+        )
+        proc = subprocess.run(
+            [sys.executable, "-c", script],
+            capture_output=True, text=True, timeout=600,
+        )
+        assert proc.returncode == 0, f"subprocess failed: {proc.stderr[-500:]}"
+        return proc.stdout.strip()
+
+    def test_cross_process_determinism(self):
+        digests = [self._digest_in_subprocess() for _ in range(3)]
+        assert len(set(digests)) == 1, (
+            "output changed between fresh interpreter processes for "
+            f"{self.PATTERNS!r}: "
+            + " vs ".join(d[:16] for d in digests)
+        )
+        assert digests[0].count("|") == len(self.PATTERNS) - 1
+
+    def test_pattern_type_count_matches_documentation(self):
+        """16 pattern types. The old README said 15 and listed 16."""
+        assert len(self.PATTERNS) == 16, (
+            f"pattern count changed to {len(self.PATTERNS)}; "
+            "update README.md and docs/RELEASE_AUDIT.md to match"
+        )
+
+    def test_no_blind_mode_implementation(self):
+        """No blinding exists, so no document may claim it does.
+
+        A previous README advertised "Blind Experiment Mode: Anonymous condition
+        IDs supported". Nothing implemented it. This test makes the absence
+        explicit: if blinding is ever genuinely added, this test fails and the
+        documentation can be corrected rather than silently diverging again.
+        """
+        hits = []
+        for path in ROOT.rglob("*.py"):
+            # tests/ and tools/ are excluded because they necessarily contain
+            # the search words: this file in its docstrings, and
+            # tools/check_docs_match_source.py in the patterns it searches for.
+            # What matters is whether APPLICATION code implements blinding.
+            if any(p in {".git", "__pycache__", ".venv", "tests", "tools"} for p in path.parts):
+                continue
+            try:
+                text = path.read_text(encoding="utf-8", errors="ignore").lower()
+            except OSError:
+                continue
+            if "blind" in text or "anonymous_condition" in text:
+                hits.append(path.relative_to(ROOT).as_posix())
+        assert hits == [], (
+            "blinding keywords now appear in the source: "
+            f"{hits}. Either the feature was added -- in which case update the "
+            "README and this test -- or a comment introduced the word."
+        )

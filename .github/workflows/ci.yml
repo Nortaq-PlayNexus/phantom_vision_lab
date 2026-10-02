@@ -1,0 +1,90 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: pytest (py${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # numpy 2.5 declares Requires-Python >=3.12, so 3.11 cannot install the
+        # suite's own minimum. The README claims 3.13+; 3.12 is included so a
+        # failure there surfaces before it becomes a 3.13 problem.
+        python-version: ['3.12', '3.13', '3.14']
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # PySide6 is deliberately NOT installed. No test imports it: the suite
+      # exercises the stimulus generator, the perturbation engine, the metrics
+      # and the statistics engine, none of which touch Qt. Installing a GUI
+      # toolkit would add minutes per matrix leg for zero coverage.
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy scipy Pillow matplotlib scikit-learn pytest
+
+      - name: Run test suite
+        # Includes test_cross_process_determinism, which spawns three further
+        # interpreters. That is the test that matters most: an in-process
+        # determinism check cannot catch a module-level RNG or a hash-order
+        # dependency, both of which look deterministic within one process.
+        run: python -m pytest tests/ -q
+
+  determinism:
+    name: cross-process determinism holds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy scipy Pillow matplotlib scikit-learn pytest
+      # Runs on a different platform and a clean checkout, which is the point. A
+      # determinism claim that only holds on the author's machine is not a
+      # determinism claim.
+      - name: All pattern types byte-identical across fresh interpreters
+        run: python tools/verify_determinism.py
+
+  docs:
+    name: documentation matches source
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy scipy Pillow matplotlib scikit-learn pytest
+
+      # The single most likely way this project misleads a reader again is by
+      # claiming a capability the source lacks. Three such claims were removed
+      # before first release; see docs/RELEASE_AUDIT.md.
+      - name: README claims match the source
+        run: python tools/check_docs_match_source.py
+
+      # Proves the check above can still fail.
+      #
+      # Without this, a truncation bug silently reduces it to checking nothing
+      # while it still reports PASS. That is not hypothetical: the first version
+      # of this check excluded the "What this is not" section along with the
+      # corrections table. That heading sits near the top of the README, so the
+      # exclusion cut the document down to its opening paragraph -- and the check
+      # reported PASS the whole time. Only this negative test asked the question
+      # that caught it.
+      - name: Negative-test the documentation check
+        run: python tools/negative_test_doc_check.py

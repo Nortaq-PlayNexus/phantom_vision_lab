@@ -10,3 +10,29 @@ data/experiments/
 dist/
 build/
 *.spec
+
+# --- Python build / test artefacts already ignored above, plus: -------------
+.coverage
+htmlcov/
+coverage.xml
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# --- experiment output ------------------------------------------------------
+# data/experiments/ is already ignored above; keep the parent explicit so an
+# empty parent does not get committed by accident.
+data/
+
+# --- secrets ----------------------------------------------------------------
+.env
+*.key
+*.pem
+credentials.json
+
+# --- editors / OS -----------------------------------------------------------
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

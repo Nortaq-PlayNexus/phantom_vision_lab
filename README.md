@@ -1,205 +1,145 @@
-# PHANTOM VISION LAB
+# Phantom Vision Lab
 
-Computational research application that simulates altered-state AI perception when viewing structured-light visual stimuli. Compares baseline and altered computational modes to investigate whether controlled perturbations cause AI visual interpretations to become unusually geometric, symbolic, recursive, or code-like.
+**A computational instrument for perturbing an image-analysis pipeline and
+measuring how its output changes.**
 
-## Features
+[![Tests](https://img.shields.io/badge/tests-25%20passing-brightgreen)](tests/)
+[![Python](https://img.shields.io/badge/python-3.13%2B-blue)](requirements.txt)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-### Core Systems
-- **Structured-Light Stimulus Generator**: 15 pattern types (lattice, radial diffraction, interference, concentric, fractal, kaleidoscopic, rotating grid, warped grid, tunnel, recursive corridor, polygons, moiré, high-frequency, interference field, noise geometry, morphing). All deterministic with seed-based generation.
-- **Altered State Engine**: 11 computational parameters (Sensory Gain, Prior Weight, Prediction Error, Cross-Modal Association, Representation Drift, Temporal Instability, Recursive Attention, Pattern Amplification, Novelty Gain, Semantic Loose Association) with 6 presets.
-- **Vision Analysis Pipeline**: Classical CV-based analysis including object detection, pattern analysis, geometry scoring, symmetry detection, color extraction, spatial relationship analysis, text-like structure detection, symbol detection, and code-like structure detection.
-- **Experiment Engine**: Full baseline vs. altered comparison with experiment tracking, data persistence, and replay capability.
-- **Statistics Engine**: Group statistics, t-tests, effect sizes (Cohen's d), confidence intervals, and aggregate reporting.
-
-### UI & Interaction
-- **PySide6 Dark UI**: Laboratory theme with cyan/magenta accents
-- **Live Stimulus Animation**: Continuous morphing display with temporal modulation
-- **Baseline/Altered Comparison**: Side-by-side viewer panels
-- **Perception Divergence Display**: Real-time score with progress bar
-- **Control Panel**: 11 parameter sliders, presets, reset/randomize, save/load custom presets, plus stimulus configuration (pattern type selector, seed input)
-- **Experiment History Table**: Browse past experiments with divergence scores, metrics, and timestamps
-- **Statistics Dashboard Tab**: Aggregated analysis with t-test results and effect sizes
-
-### Data & Export
-- **Auto-Export**: JSON, CSV, HTML report, and Markdown report generated automatically after every experiment
-- **Blind Experiment Mode**: Anonymous condition IDs supported
-- **Experiment Replay**: Full reproducibility from metadata and seeds
-- **Data Persistence**: All experiments saved in `data/experiments/` with registry
-
-## Installation
-
-### Prerequisites
-- Windows 10/11
-- Python 3.13+
-- pip
-
-### Setup
-
-```bash
-cd phantom_vision_lab
-pip install -r requirements.txt
-```
-
-Or manually:
-
-```bash
-pip install PySide6 numpy Pillow matplotlib scipy scikit-learn pytest
-```
-
-### Running
-
-```bash
-python main.py
-```
-
-Or use the batch file:
-
-```cmd
-RUN.bat
-```
-
-For executable build:
-
-```cmd
-BUILD.bat
-```
-
-### Command Line (Headless Mode)
-
-Run experiments without the GUI:
-
-```bash
-# Single experiment
-python run_experiment.py experiment --pattern fractal --preset "HIGH PREDICTION ERROR" --seed 999
-
-# With parameter overrides
-python run_experiment.py experiment --pattern noise_geometry --params "SENSORY_GAIN=90" "PREDICTION_ERROR=80"
-
-# Batch experiments
-python run_experiment.py batch --iterations 20 --presets "BASELINE,MAXIMUM EXPLORATION"
-```
-
-## Quick Start
-
-1. Launch the application
-2. A generated structured-light pattern will be displayed in the LIVE STIMULUS panel (animated)
-3. Select a pattern type and seed in the Stimulus Configuration section
-4. Adjust parameters in the Control Panel using sliders (0-100 for each)
-5. Apply a preset: BASELINE, LOW PERTURBATION, HIGH SENSORY GAIN, HIGH PREDICTION ERROR, PATTERN AMPLIFICATION, MAXIMUM EXPLORATION
-5. Click **RUN EXPERIMENT** to execute baseline + altered comparison
-6. View results: perception divergence score, metrics, and scientific interpretation report
-7. Browse past experiments in the **History** tab and statistics in the **Statistics** tab
-
-## Running Tests
-
-```bash
-python -m pytest tests/ -v
-```
-
-## Technology Stack
-
-- **Python 3.13+** — Core runtime
-- **PySide6** — Desktop UI
-- **NumPy/SciPy** — Numerical computation
-- **Pillow** — Image processing
-- **scikit-learn** — Color clustering
-- **matplotlib** — Visualization (available)
-- **pytest** — Testing framework
-
-## Project Structure
-
-```
-phantom_vision_lab/
-├── app/                  Application entry point and state management
-│   └── app_state.py      AppState, experiment orchestration
-├── ui/                   PySide6 interface
-│   ├── main_window.py    Main window, viewers, animation, history, stats
-│   ├── control_panel.py  Parameter controls, presets, experiment trigger
-│   └── components.py     Shared UI components (ImageViewer, threads)
-├── vision/               Vision analysis pipeline
-│   └── __init__.py       VisionModelProvider, analyze_image_cv, VisionResult
-├── altered_state/        Computational perturbation engine
-│   └── engine.py         AlteredStateEngine, parameters, presets, metric transforms
-├── stimuli/              Visual stimulus generator
-│   └── generator.py      15 pattern types, seed-based determinism
-├── experiments/          Experiment orchestration
-│   └── engine.py         Run experiments, replay, results management
-├── analysis/             Metrics and divergence calculations
-│   └── metrics.py        PerceptionMetrics, compute_perception_divergence
-├── statistics/           Statistical analysis engine
-│   └── stats.py          Group stats, t-tests, effect sizes, confidence intervals
-├── storage/              Data persistence and export
-│   ├── experiment_store.py    Experiment registry and data storage
-│   └── exporter.py            JSON, CSV, HTML, Markdown export
-├── reports/              Report generation
-│   └── reporter.py        PerceptionReport, scientific interpretation
-├── config/               Application settings
-│   └── settings.py       AppSettings, paths, hardware mode
-├── models/               Hardware detection
-│   └── hardware.py       CPU, RAM, CUDA detection
-├── tests/                Automated tests
-│   └── test_all.py       25 tests across all modules
-├── docs/                 Documentation
-│   ├── RESEARCH.md       Research documentation and bibliography
-│   └── FINAL_AUDIT.md    Feature audit and interpretation guide
-├── data/experiments/     Runtime experiment data
-├── main.py               Entry point
-└── requirements.txt      Dependencies
-```
-
-## Experiment Data
-
-All experiments are saved in `data/experiments/EXP-XXXXXX/` with:
-
-- `metadata.json` — Experiment configuration, model info, parameters
-- `baseline.json` / `altered.json` — AI interpretation results
-- `measurements.json` — Divergence scores, seeds, timestamps
-- `stimulus.png` — Generated visual stimulus
-- `report.md` / `report.html` — Structured experience reports
-- `export.json` / `export.csv` — Flat data exports
-
-## Interpretation Guide
-
-### Perception Divergence Score
-| Range | Meaning |
-|-------|---------|
-| 0.0 | No difference between baseline and altered interpretation |
-| 0.1-0.3 | Minor differences in interpretation |
-| 0.3-0.5 | Moderate differences |
-| 0.5+ | Significant differences in interpretation |
-
-### Metrics
-- **Geometry Score**: How geometric/structured the model's interpretation is
-- **Symmetry Score**: Degree of bilateral symmetry detected
-- **Confidence**: How confident the model is in its interpretation (may decrease under perturbation)
-- **Novelty**: How novel/unusual the model's interpretation is (may increase under perturbation)
-- **Uncertainty**: Model uncertainty (may increase under perturbation)
-- **Code-like Structures**: Count of detected code-like patterns (grid structures, sequential arrangements)
-
-## Scientific Limitations
-
-- This is a computational simulation only
-- Does not reproduce biological psychedelic states
-- Does not establish subjective consciousness
-- All metrics are derived from computer vision algorithms, not neural network internals
-- Statistical significance requires sufficient independent observations
-- The vision model uses classical CV techniques (edge detection, symmetry analysis) rather than deep learning
-- Cross-modal associations are simulated computationally, not computed from actual multimodal models
-
-## Hardware Requirements
-
-| Mode | Requirements |
-|------|-------------|
-| Light Mode | 4GB+ RAM, CPU only |
-| Balanced Mode | 8GB+ RAM, recommended default |
-| High Quality Mode | 16GB+ RAM, CUDA GPU with 4GB+ VRAM recommended |
-
-All processing works in CPU-only mode.
-
-## License
-
-Virtual simulation only. No physical hardware is controlled.
+> **This is classical computer vision, not a neural network.** No model is
+> loaded. The "perception" it measures is OpenCV-style image analysis, and the
+> word *perception* is a metaphor for output-structure analysis. See
+> [What this is not](#what-this-is-not) — it is the most important section here.
 
 ---
 
-_Disclaimer: This software simulates computational changes in AI perception. It does not reproduce a biological psychedelic state and does not establish subjective consciousness. All measurements are derived from mathematical image analysis algorithms, not from neural network internal states._
+## What it does
+
+Generates 16 deterministic structured-light pattern types from a seed, runs them
+through a fixed image-analysis pipeline twice — once unmodified, once with 11
+computational parameters perturbed — and reports how much the analysis output
+changed.
+
+```
+seed ──► stimulus generator ──► vision pipeline ──► metrics
+              │                       ▲                │
+              │                  altered_state        │
+              └───────────────────────┴──────► divergence
+```
+
+The point is the *perturbation*. If you change 11 knobs and the output does not
+move, that is a finding about the pipeline. If it moves a lot, that is also a
+finding — about a box of image filters, not about consciousness.
+
+## What this is not
+
+Stated first because everything else is easy to misread.
+
+- **Not a neural network.** No model is bundled, loaded, or downloaded. Metrics
+  come from edge detection, symmetry analysis, contour finding and clustering.
+- **Not consciousness, and not a claim about it.** Nothing here measures
+  subjective experience, and the software is not capable of doing so.
+- **Not a psychedelic model.** It does not reproduce a biological altered state.
+- **Not a validated psychometric instrument.** The perception divergence score is
+  an algorithmic construct, not a validated measure of anything.
+- **Not blind.** See [Corrections to earlier documentation](#corrections-to-earlier-documentation).
+
+## The divergence score, honestly
+
+```python
+score = (geometry_diff + novelty_diff + uncertainty_diff) / (3 * max(1, embedding_distance))
+```
+
+Two things about this that matter more than the formula:
+
+1. **It self-normalises.** The denominator is an embedding distance built from the
+   same metric components that appear in the numerator. Raising perturbation
+   inflates both. A ratio of part-of-a-thing to the whole-of-that-thing is
+   bounded by construction, and that bound is doing much of the work.
+2. **The score has no validated interpretation scale.** An earlier version of this
+   README published a table reading 0.5+ as "significant differences in
+   interpretation". **That table was removed.** Nothing in this repository
+   establishes 0.5 as a threshold, because no data was ever collected that could.
+
+Read the score as a *relative* quantity — useful for ranking perturbations against
+each other on one pipeline, not for asserting that an effect occurred.
+
+## Install
+
+```bash
+pip install -r requirements.txt
+python main.py
+```
+
+Headless, no GUI needed:
+
+```bash
+python run_experiment.py experiment --pattern fractal --preset "HIGH PREDICTION ERROR" --seed 999
+python run_experiment.py batch --iterations 20 --presets "BASELINE,MAXIMUM EXPLORATION"
+```
+
+## Tests
+
+```bash
+python -m pytest tests/ -q
+```
+
+25 tests. One of them, `test_cross_process_determinism`, is worth calling out: it
+generates all 16 pattern types in **three fresh interpreter processes** and
+compares digests. The project's other determinism test calls the generator twice
+inside one process, which cannot detect a module-level RNG or a hash-order
+dependency — the usual real causes of cross-machine drift.
+
+Determinism was independently confirmed at all 16 pattern types across three
+separate interpreter starts, and is byte-identical between them.
+
+## Corrections to earlier documentation
+
+Found while preparing this release. Recorded rather than quietly fixed, because a
+reader who saw the old text deserves to know it was wrong.
+
+| Claim | Was | Actually |
+|---|---|---|
+| Pattern count | "15 pattern types" (twice) | **16.** The old text said 15 and then listed 16. |
+| Blind experiment mode | "Anonymous condition IDs supported" | **Not implemented.** The string `blind` does not appear anywhere in the source. |
+| Licence | "Virtual simulation only. No physical hardware is controlled." | Not a licence — a disclaimer. The project had **no LICENSE file**. MIT added. |
+
+`docs/FINAL_AUDIT.md` had already flagged the blind-mode claim, but described it
+as "infrastructure is designed but not enforced in the UI layer". That is more
+generous than the evidence supports: there is no implementation at any layer, not
+just an unenforced one.
+
+## Limitations
+
+- Single-operator, unblinded, self-reported-divergence. There is no second
+  observer and no randomisation, so expectancy effects are not controlled.
+- Statistical significance requires more independent observations than this
+  repository contains. The bundled statistics engine computes t-tests and effect
+  sizes, but no preregistered hypothesis is tested anywhere in it.
+- Cross-modal associations are simulated, not computed from a multimodal model.
+- No causality: the design cannot show that a *specific* parameter, rather than
+  the perturbation as a whole, produced a given change.
+- Stimuli are synthetic. Nothing here has been shown to generalise to natural
+  images.
+
+## Layout
+
+| Path | Contents |
+|---|---|
+| `stimuli/generator.py` | 16 pattern types, seed-based determinism |
+| `altered_state/engine.py` | 11 parameters, 6 presets, metric transforms |
+| `vision/__init__.py` | the CV analysis pipeline |
+| `analysis/metrics.py` | `compute_perception_divergence` |
+| `experiments/engine.py` | baseline/altered orchestration, replay |
+| `storage/`, `reports/` | persistence, JSON/CSV/HTML/Markdown export |
+| `ui/` | PySide6 desktop interface |
+| `tests/test_all.py` | 25 tests |
+| `docs/FINAL_AUDIT.md` | feature audit and interpretation guide |
+| `docs/RELEASE_AUDIT.md` | what was wrong before release, and what was fixed |
+
+## Licence
+
+MIT — see [LICENSE](LICENSE). You may not use this to claim evidence about
+consciousness, psychedelic experience, or neural-network perception. It cannot
+support such a claim, and the licence obliges you not to pretend otherwise.
