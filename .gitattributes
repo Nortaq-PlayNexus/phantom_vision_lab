@@ -1,0 +1,16 @@
+# Byte-exact checkout.
+#
+# This project's central claim is byte-level determinism: the same seed must
+# produce the same pixels, verified by SHA-256. That claim is about image output,
+# not source text, so line-ending conversion would not by itself break it.
+#
+# It is still wrong here. tools/verify_determinism.py digests generated images,
+# and CI compares those digests across platforms. Normalising line endings makes
+# the same commit produce different working trees on Windows and Linux, so "these
+# two checkouts are the same project" stops being true -- and a reader comparing
+# the two would be comparing files that differ for no reason the repository
+# records.
+#
+# `* -text` marks every path as binary for git's purposes: no end-of-line
+# conversion in either direction, on either platform.
+* -text
