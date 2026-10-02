@@ -36,3 +36,11 @@ credentials.json
 .idea/
 .DS_Store
 Thumbs.db
+
+# --- Zenodo upload artefacts -------------------------------------------------
+# Rebuildable byte-for-byte with
+#   python tools/build_zenodo_package.py --out <path> --verify
+# The canonical copy lives on Zenodo; the digest is recorded in
+# zenodo/DEPOSIT.md. Carrying it in git history would be permanent and redundant.
+zenodo/*.zip
+zenodo/.zenodo_token

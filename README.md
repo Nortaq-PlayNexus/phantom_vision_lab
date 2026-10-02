@@ -3,9 +3,10 @@
 **A computational instrument for perturbing an image-analysis pipeline and
 measuring how its output changes.**
 
-[![Tests](https://img.shields.io/badge/tests-25%20passing-brightgreen)](tests/)
-[![Python](https://img.shields.io/badge/python-3.13%2B-blue)](requirements.txt)
+[![Tests](https://img.shields.io/badge/tests-28%20passing-brightgreen)](tests/)
+[![Python](https://img.shields.io/badge/python-3.12%2B-blue)](requirements.txt)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![Zenodo](https://img.shields.io/badge/zenodo-draft%2023112116-lightgrey)](zenodo/DEPOSIT.md)
 
 > **This is classical computer vision, not a neural network.** No model is
 > loaded. The "perception" it measures is OpenCV-style image analysis, and the
