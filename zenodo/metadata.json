@@ -2,7 +2,7 @@
   "schema": "zenodo-deposit-metadata-v1",
   "upload_type": "software",
   "title": "Phantom Vision Lab: a computational instrument for perturbing an image-analysis pipeline and measuring how its output changes",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "publication_date": "2026-10-03",
   "creators": [
     {
@@ -15,10 +15,22 @@
   "language": "eng",
   "access_right": "open",
   "subjects": [
-    { "id": "euroscivoc:307", "title": "Software" },
-    { "id": "mesh:D015203", "title": "Reproducibility of Results" },
-    { "id": "mesh:D012106Q000706", "title": "Research/statistics & numerical data" },
-    { "id": "euroscivoc:1061", "title": "Numerical analysis" }
+    {
+      "id": "euroscivoc:307",
+      "title": "Software"
+    },
+    {
+      "id": "mesh:D015203",
+      "title": "Reproducibility of Results"
+    },
+    {
+      "id": "mesh:D012106Q000706",
+      "title": "Research/statistics & numerical data"
+    },
+    {
+      "id": "euroscivoc:1061",
+      "title": "Numerical analysis"
+    }
   ],
   "communities": [],
   "keywords": [
@@ -44,5 +56,6 @@
   ],
   "notes": "NO CLAIM ABOUT CONSCIOUSNESS, NEURAL NETWORKS, OR PHARMACOLOGY IS MADE OR SUPPORTABLE BY THIS SOFTWARE. It loads no neural network. Its metrics come from classical computer-vision image analysis, and the word 'perception' throughout is a metaphor for output-structure analysis. It cannot measure subjective experience and does not attempt to.\n\nThe perception divergence score has no validated interpretation scale. It self-normalises: its denominator is an embedding distance computed from the same metric components as its numerator, so it is bounded by construction. A previous version of the README published a table reading a score of 0.5+ as 'significant differences in interpretation'; that table was removed because no experiment in this repository establishes any such threshold. Use the score to rank perturbations against one another on a single pipeline, not to assert that an effect occurred.\n\nDETERMINISM IS VERIFIED ACROSS PROCESSES, NOT JUST WITHIN ONE. All 16 pattern types are byte-identical across three separate interpreter invocations. The project's original determinism test called the generator twice inside a single process, which cannot detect a module-level RNG, a lazily-initialised global, or a dependence on PYTHONHASHSEED -- all of which appear deterministic in-process and drift between runs. The check runs in continuous integration on a clean checkout on a different platform.\n\nTHREE FALSE CLAIMS WERE FOUND IN THE DOCUMENTATION BEFORE FIRST RELEASE AND CORRECTED, with the full account retained in docs/RELEASE_AUDIT.md rather than silently fixed. First: the README advertised 'Blind Experiment Mode: Anonymous condition IDs supported', but the string 'blind' appears nowhere in the application source -- the feature was absent at every layer, not merely unenforced in the UI as the project's own earlier audit had suggested. Second: the pattern count was stated as 15 while the same sentence listed 16. Third: the License section contained a disclaimer rather than a licence, and the project had no LICENSE file at all. A fourth claim, an unvalidated interpretation table for the divergence score, was removed on the same grounds.\n\nTwo of those corrections are now enforced mechanically: a documentation check fails if the README re-asserts a capability the source lacks, and a negative test proves that check can still fail. The negative test exists because the first version of the check excluded a section whose heading sits near the top of the document, which truncated it to its opening paragraph while it continued to report success.\n\nNot everything was wrong. Determinism genuinely holds, the prior limitations section was accurate and has been kept, and data handling is clean. Test suite: 28 passing on Python 3.12, 3.13 and 3.14.",
   "immutable_record_warning": "Zenodo records are immutable once published. Any future change must be published as a NEW VERSION (new version DOI, same concept DOI), not as an edit.",
-  "doi": ""
+  "doi": "",
+  "version_note": "Version 2 adds the four subjects that Zenodo accepted but did not persist in v1. No file, code or scientific content changes: the archive is byte-identical to v1 (md5 4e10066e5fa4e000c92c13098d265d2c, SHA-256 506d0d127a7cacc7bd148787d84d807ca57cfbf94795f7b3524d605bfa5e61bc). v1 (10.5281/zenodo.23112116) published with zero subjects, because Zenodo silently discards the field from a deposition-API payload."
 }
