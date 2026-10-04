@@ -230,3 +230,26 @@ store, and a partial PUT will delete everything else while reporting success. Do
 not trust a success response. Read the record back. If two sources disagree,
 query the live API rather than reasoning from a file. The user prefers to be asked
 before anything irreversible, and does not want deposits deleted.
+
+---
+
+## Working-copy locations — do not use %TEMP%
+
+| Repository | Location |
+|---|---|
+| consciousness-indicator-battery | `C:\Users\natha\AI_RESEARCH\consciousness-indicator-battery` |
+| phantom_vision_lab | `C:\Users\natha\code\phantom_vision_lab` |
+| ScientificDiscoveryLab (git) | `C:\Users\natha\AI_RESEARCH\ScientificDiscoveryLab` |
+| ScientificDiscoveryLab (source of truth) | `C:\Users\natha\ScientificDiscoveryLab` |
+
+The battery repository lived at
+`C:\Users\natha\AppData\Local\Temp\opencode\cib-clean` until 2026-10-04, when
+**that directory was cleared and the working copy was lost.** It was recovered by
+cloning from GitHub — no committed work was lost — but uncommitted work would
+have been, and a Zenodo working directory is not the place for that.
+
+The three staged drafts (`23122664`, `23122787`, `23123095`) were never at risk.
+They live on Zenodo's servers.
+
+**Never keep a working copy under `%TEMP%`.** See `PUBLISH_CHECKLIST.md` for the
+three records staged and ready.
