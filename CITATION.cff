@@ -1,12 +1,12 @@
-cff-version: 1.2.0
-title: "Phantom Vision Lab — a computational instrument for perturbing an image-analysis pipeline and measuring how its output changes"
+﻿cff-version: 1.2.0
+title: "Phantom Vision Lab â€” a computational instrument for perturbing an image-analysis pipeline and measuring how its output changes"
 message: "If you use this software, read the 'What this is not' section of the README first. It is classical computer vision, not a neural network, and it measures no consciousness."
 type: software
 abstract: >-
   A research instrument that generates 16 deterministic structured-light pattern
   types from a seed, runs each through a fixed classical computer-vision analysis
-  pipeline twice — once unmodified and once with 11 computational parameters
-  perturbed — and reports how much the analysis output changed. Determinism is
+  pipeline twice â€” once unmodified and once with 11 computational parameters
+  perturbed â€” and reports how much the analysis output changed. Determinism is
   byte-identical across fresh interpreter processes. The software loads no neural
   network, measures no subjective experience, and reproduces no biological altered
   state; "perception" throughout is a metaphor for output-structure analysis. The
@@ -24,6 +24,8 @@ keywords:
   - open-science
   - self-audit
 license: MIT
+doi: "10.5281/zenodo.23123095"
+concept-doi: "10.5281/zenodo.23112115"
 repository-code: "https://github.com/Nortaq-PlayNexus/phantom-vision-lab"
-version: "1.0.0"
-date-released: "2026-10-03"
+version: "2.0.0"
+date-released: "2026-10-04"

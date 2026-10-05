@@ -12,30 +12,43 @@ deposit, or a near-miss. If you change nothing else, preserve the following.
 
 | Project | Location | GitHub | Zenodo |
 |---|---|---|---|
-| consciousness-indicator-battery | `C:\Users\natha\AppData\Local\Temp\opencode\cib-clean` | `Nortaq-PlayNexus/consciousness-indicator-battery` | published **v2 `10.5281/zenodo.23111535`**, concept `10.5281/zenodo.23101902` |
-| phantom_vision_lab | `C:\Users\natha\code\phantom_vision_lab` | `Nortaq-PlayNexus/phantom-vision-lab` | published **`10.5281/zenodo.23112116`** |
-| ScientificDiscoveryLab | git copy `C:\Users\natha\AI_RESEARCH\ScientificDiscoveryLab`; **source of truth** `C:\Users\natha\ScientificDiscoveryLab` | `Nortaq-PlayNexus/ScientificDiscoveryLab` | published **`10.5281/zenodo.23109117`** |
+| consciousness-indicator-battery | `C:\Users\natha\AI_RESEARCH\consciousness-indicator-battery` | `Nortaq-PlayNexus/consciousness-indicator-battery` | published **v3 `10.5281/zenodo.23122664`**, concept `10.5281/zenodo.23101902` |
+| phantom_vision_lab | `C:\Users\natha\code\phantom_vision_lab` | `Nortaq-PlayNexus/phantom-vision-lab` | published **v2 `10.5281/zenodo.23123095`**, concept `10.5281/zenodo.23112115` |
+| ScientificDiscoveryLab | git copy `C:\Users\natha\AI_RESEARCH\ScientificDiscoveryLab`; **source of truth** `C:\Users\natha\ScientificDiscoveryLab` | `Nortaq-PlayNexus/ScientificDiscoveryLab` | published **v2 `10.5281/zenodo.23122787`**, concept `10.5281/zenodo.23109116` |
 
 **All CI green.** Battery 48 tests. Phantom Vision Lab 28 tests, 5 jobs. Lab 543
 tests, 5 jobs, 20 expected excluded-data failures.
 
-### Three drafts, staged and ready
+### Twelve records published 2026-10-04
 
-Created 2026-10-04. **All are drafts. Nothing irreversible has happened.**
+**All twelve are published and verified.** This section previously described the
+three umbrella records as staged drafts awaiting a publish click; the maintainer
+published them. `PUBLICATION_VERIFICATION.md` in the laboratory repository is the
+record of truth, built from public-API read-backs rather than a publish click.
 
-| Draft | Record | Version | Concept linked |
-|---|---|---|---|
-| `23122664` | battery | 3.0.0 | `23101902` verified |
-| `23122787` | lab | 2.0.0 | `23109116` verified |
-| `23123095` | phantom vision lab | 2.0.0 | `23112115` verified |
+| Record | Version | DOI |
+|---|---|---|
+| battery | 3.0.0 | `10.5281/zenodo.23122664` |
+| ScientificDiscoveryLab | 2.0.0 | `10.5281/zenodo.23122787` |
+| phantom vision lab | 2.0.0 | `10.5281/zenodo.23123095` |
+| speckle contrast law | 1.0.0 | `10.5281/zenodo.23132744` |
+| vortex density | 1.0.0 | `10.5281/zenodo.23132746` |
+| discrete vortex detection bias | 1.0.0 | `10.5281/zenodo.23132748` |
+| topology-measurement definition | 1.0.0 | `10.5281/zenodo.23132753` |
+| RNG certification | 1.0.0 | `10.5281/zenodo.23132759` |
+| percolation thresholds and exponents | 1.0.0 | `10.5281/zenodo.23132761` |
+| Feigenbaum universality | 1.0.0 | `10.5281/zenodo.23132763` |
+| prime gap statistics | 1.0.0 | `10.5281/zenodo.23132767` |
+| water acoustic response | 1.0.0 | `10.5281/zenodo.23132771` |
 
-Each needs, in the web form before publishing:
+**Subjects: 0 of 12.** The web form did not persist the field either, and
+published records are immutable, so this is permanent for all twelve. Fixing it
+means a new version of each with subjects typed into the form. See D2 in
+`PUBLICATION_VERIFICATION.md`.
 
-- **subjects** (6 / 8 / 4 respectively) â€” the API drops this field
-- **version note** â€” same
-
-Then Publish, and record the new DOI in `metadata.json`, `CITATION.cff`, the
-README badge and `RELEASE.md`.
+One record remains staged: **battery v3.0.1**, draft `23137224`, unsubmitted.
+It exists because battery v3.0.0 does not rebuild byte-for-byte from its
+repository. Not a scientific change.
 
 ### Not published, and why
 
@@ -233,7 +246,7 @@ before anything irreversible, and does not want deposits deleted.
 
 ---
 
-## Working-copy locations — do not use %TEMP%
+## Working-copy locations ï¿½ do not use %TEMP%
 
 | Repository | Location |
 |---|---|
@@ -245,11 +258,10 @@ before anything irreversible, and does not want deposits deleted.
 The battery repository lived at
 `C:\Users\natha\AppData\Local\Temp\opencode\cib-clean` until 2026-10-04, when
 **that directory was cleared and the working copy was lost.** It was recovered by
-cloning from GitHub — no committed work was lost — but uncommitted work would
+cloning from GitHub ï¿½ no committed work was lost ï¿½ but uncommitted work would
 have been, and a Zenodo working directory is not the place for that.
 
-The three staged drafts (`23122664`, `23122787`, `23123095`) were never at risk.
-They live on Zenodo's servers.
+The twelve records published on 2026-10-04 live on Zenodo's servers and were never
+at risk. So is battery v3.0.1 (draft `23137224`, still unsubmitted).
 
-**Never keep a working copy under `%TEMP%`.** See `PUBLISH_CHECKLIST.md` for the
-three records staged and ready.
+**Never keep a working copy under `%TEMP%`.** See `PUBLISH_CHECKLIST.md`.
