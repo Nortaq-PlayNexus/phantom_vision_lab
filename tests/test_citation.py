@@ -66,35 +66,47 @@ def test_citation_doi_and_concept_are_well_formed():
 def test_citation_version_is_not_behind_the_deposit_metadata():
     """Guards the exact regression: a citation left behind by a publication.
 
-    Offline by design. It compares the citation against zenodo/metadata.json,
-    which is the record this tree was built to publish. A live Zenodo lookup
-    would be a stronger check but would turn every offline clone red.
+    Offline by design. The ground truth is zenodo/metadata.json, which is tracked
+    in git and carries the version this tree was built to publish.
+
+    An earlier version of this test cross-checked against
+    zenodo/phantom-vision-lab-v*.zip instead. That archive is gitignored -- it is
+    rebuildable and lives on Zenodo -- so the check passed on the maintainer's
+    machine, where a stale local zip happened to sit in the tree, and failed in
+    every clean checkout and on CI. A gate that reports a different answer
+    depending on untracked files in the working directory is worse than no gate:
+    it trains you to ignore it. Found by pushing and reading the CI log, which is
+    the only reason it was caught at all.
     """
     import json
 
     if not METADATA.is_file():
-        pytest.skip("zenodo/metadata.json not present")
+        pytest.skip("zenodo/metadata.json not present; nothing to cross-check against")
 
     metadata = json.loads(METADATA.read_text(encoding="utf-8"))
-    text = _citation_text()
+    built = metadata.get("version")
+    assert built, (
+        "zenodo/metadata.json declares no version, so the citation cannot be "
+        "checked against it. Either record the version or drop this test -- do "
+        "not leave it passing vacuously."
+    )
 
+    text = _citation_text()
     cited_version = re.search(r'^version:\s*"([^"]+)"', text, re.M)
     assert cited_version, "CITATION.cff declares no version"
-    cited = tuple(int(p) for p in cited_version.group(1).split("."))
+    cited = cited_version.group(1)
 
-    # The archive filename carries the version that was actually built, e.g.
-    # phantom-vision-lab-v2.0.0.zip. That is the ground truth for this tree.
-    archives = sorted((ROOT / "zenodo").glob("phantom-vision-lab-v*.zip"))
-    assert archives, "no built archive found in zenodo/; cannot cross-check the version"
-    built = archives[-1].stem.rsplit("-v", 1)[-1]
-    built_tuple = tuple(int(p) for p in built.split("."))
+    def as_tuple(v: str) -> tuple[int, ...]:
+        parts = v.split(".")
+        assert len(parts) == 3 and all(p.isdigit() for p in parts), (
+            f"version {v!r} is not a three-part semantic version"
+        )
+        return tuple(int(p) for p in parts)
 
-    assert cited >= built_tuple, (
-        f"CITATION.cff cites v{'.'.join(map(str, cited))} but the tree contains "
-        f"v{built} ({archives[-1].name}). A citation must never trail the artifact "
-        f"it describes."
+    assert as_tuple(cited) >= as_tuple(built), (
+        f"CITATION.cff cites v{cited} but zenodo/metadata.json publishes v{built}. "
+        f"A citation must never trail the artifact it describes."
     )
-    assert metadata is not None
 
 
 def test_concept_doi_is_consistent_across_documents():
