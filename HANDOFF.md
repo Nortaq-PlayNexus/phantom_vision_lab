@@ -13,10 +13,10 @@ deposit, or a near-miss. If you change nothing else, preserve the following.
 | Project | Location | GitHub | Zenodo |
 |---|---|---|---|
 | consciousness-indicator-battery | `C:\Users\natha\AI_RESEARCH\consciousness-indicator-battery` | `Nortaq-PlayNexus/consciousness-indicator-battery` | published **v3 `10.5281/zenodo.23122664`**, concept `10.5281/zenodo.23101902` |
-| phantom_vision_lab | `C:\Users\natha\code\phantom_vision_lab` | `Nortaq-PlayNexus/phantom-vision-lab` | published **v2 `10.5281/zenodo.23123095`**, concept `10.5281/zenodo.23112115` |
+| phantom_vision_lab | `C:\Users\natha\code\phantom_vision_lab` | `Nortaq-PlayNexus/phantom_vision_lab` | published **v2.0.1 `10.5281/zenodo.23229095`**, concept `10.5281/zenodo.23112115` |
 | ScientificDiscoveryLab | git copy `C:\Users\natha\AI_RESEARCH\ScientificDiscoveryLab`; **source of truth** `C:\Users\natha\ScientificDiscoveryLab` | `Nortaq-PlayNexus/ScientificDiscoveryLab` | published **v2 `10.5281/zenodo.23122787`**, concept `10.5281/zenodo.23109116` |
 
-**All CI green.** Battery 48 tests. Phantom Vision Lab 28 tests, 5 jobs. Lab 543
+**All CI green.** Battery 48 tests. Phantom Vision Lab 36 tests, 5 jobs. Lab 543
 tests, 5 jobs, 20 expected excluded-data failures.
 
 ### Twelve records published 2026-10-04

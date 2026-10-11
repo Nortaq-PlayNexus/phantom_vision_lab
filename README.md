@@ -1,4 +1,4 @@
-# Phantom Vision Lab
+﻿# Phantom Vision Lab
 
 > **New to this repository, or picking up an interrupted session?**
 > Read [`HANDOFF.md`](HANDOFF.md) first. It records what exists and where, the
@@ -8,10 +8,10 @@
 **A computational instrument for perturbing an image-analysis pipeline and
 measuring how its output changes.**
 
-[![Tests](https://img.shields.io/badge/tests-28%20passing-brightgreen)](tests/)
+[![Tests](https://img.shields.io/badge/tests-36%20passing-brightgreen)](tests/)
 [![Python](https://img.shields.io/badge/python-3.12%2B-blue)](requirements.txt)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.23123095-blue)](https://doi.org/10.5281/zenodo.23123095)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.23229095-blue)](https://doi.org/10.5281/zenodo.23229095)
 
 > **This is classical computer vision, not a neural network.** No model is
 > loaded. The "perception" it measures is OpenCV-style image analysis, and the
@@ -91,7 +91,7 @@ python run_experiment.py batch --iterations 20 --presets "BASELINE,MAXIMUM EXPLO
 python -m pytest tests/ -q
 ```
 
-25 tests. One of them, `test_cross_process_determinism`, is worth calling out: it
+36 tests. One of them, `test_cross_process_determinism`, is worth calling out: it
 generates all 16 pattern types in **three fresh interpreter processes** and
 compares digests. The project's other determinism test calls the generator twice
 inside one process, which cannot detect a module-level RNG or a hash-order
@@ -140,7 +140,7 @@ just an unenforced one.
 | `experiments/engine.py` | baseline/altered orchestration, replay |
 | `storage/`, `reports/` | persistence, JSON/CSV/HTML/Markdown export |
 | `ui/` | PySide6 desktop interface |
-| `tests/test_all.py` | 25 tests |
+| `tests/test_all.py`, `tests/test_citation.py` | 36 tests |
 | `docs/FINAL_AUDIT.md` | feature audit and interpretation guide |
 | `docs/RELEASE_AUDIT.md` | what was wrong before release, and what was fixed |
 

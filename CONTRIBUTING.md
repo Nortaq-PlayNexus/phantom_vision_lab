@@ -80,4 +80,4 @@ pip install -r requirements.txt
 python -m pytest tests/ -q
 ```
 
-28 tests, about 10 seconds. No GPU required.
+36 tests, about 100 seconds. No GPU required.

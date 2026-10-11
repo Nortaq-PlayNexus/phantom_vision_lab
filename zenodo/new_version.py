@@ -69,7 +69,11 @@ REQUIRED = {
     "keywords": lambda v: isinstance(v, list) and len(v) > 0,
 }
 
-KNOWN_UNSETTABLE = ("subjects", "version_note")
+# Verified by probe on 2026-10-10: `version_note` is accepted and then
+# dropped by this API. `subjects` was listed here before that probe and is
+# writable -- removing it, because omitting it under full-replacement PUT
+# semantics would have silently destroyed the subject list.
+KNOWN_UNSETTABLE = ("version_note",)
 
 
 def token() -> str:
